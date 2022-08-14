@@ -1,13 +1,12 @@
 <?php
 
 use DI\ContainerBuilder;
-use Poligas\Aplicacao\Infra\EntityManagerCreator;
-use Doctrine\ORM\EntityManagerInterface;
+use Poligas\Aplicacao\Infra\Persistence\ConnectionCreator;
 
 $builder = new ContainerBuilder();
 $builder->addDefinitions([
-        EntityManagerInterface::class => function () {
-            return EntityManagerCreator::createEntityManager();
+        \PDO::class => function () {
+            return ConnectionCreator::createConnection();
     }
 ]);
 $container = $builder->build();

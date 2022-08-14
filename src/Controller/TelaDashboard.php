@@ -4,23 +4,21 @@ namespace Poligas\Aplicacao\Controller;
 
 use Poligas\Aplicacao\Helper\RenderHtmlTrait;
 use Poligas\Aplicacao\Helper\MessageTrait;
-use Poligas\Aplicacao\Entity\Usuario;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Doctrine\ORM\EntityManagerInterface;
 
 class TelaDashBoard implements RequestHandlerInterface
 {
     use RenderHtmlTrait;
     use MessageTrait;
-    private $repositorioUsuarios;
+    private $repositorio;
 
-    public function __construct(EntityManagerInterface $entityManager) 
+    public function __construct(\PDO $connection) 
     {
-        $this->repositorioUsuarios = $entityManager->getRepository(Usuario::class);
+        
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface

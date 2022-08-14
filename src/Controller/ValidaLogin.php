@@ -4,20 +4,20 @@ namespace Poligas\Aplicacao\Controller;
 
 use Poligas\Aplicacao\Entity\Usuario;
 use Poligas\Aplicacao\Helper\MessageTrait;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Nyholm\Psr7\Response;
+use Poligas\Aplicacao\Infra\Repository\PdoUserRepository;
 
 class ValidaLogin implements RequestHandlerInterface
 {
     use MessageTrait;
     private $repositorioUsuarios;
 
-    public function __construct(EntityManagerInterface $entityManager) 
+    public function __construct(\PDO $connection) 
     {
-        $this->repositorioUsuarios = $entityManager->getRepository(Usuario::class);
+        $this->repositorioUsuarios = new PdoUserRepository($connection);
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface

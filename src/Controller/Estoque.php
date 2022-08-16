@@ -23,7 +23,7 @@ class Estoque implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $html = $this->renderizaHtml('/Main/estoque-html.php', ['titulo' => 'Estoque - PoliGás']);
+        $html = $this->renderizaHtml('/Main/estoque-html.php', ['titulo' => 'Estoque - Poligás']);
         return new Response(200, [], $html);
     }
 }

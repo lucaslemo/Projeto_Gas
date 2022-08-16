@@ -17,7 +17,7 @@ class FormularioLogin implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $html = $this->renderizaHtml('/Login/login-html.php', ['titulo' => 'Login - PoliGás']);
+        $html = $this->renderizaHtml('/Login/login-html.php', ['titulo' => 'Login - Poligás']);
         return new Response(200, [], $html);
     }
 }

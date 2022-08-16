@@ -23,7 +23,7 @@ class TelaDashBoard implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $html = $this->renderizaHtml('/Main/dashboard-html.php', ['titulo' => 'Dashboard - PoliGás']);
+        $html = $this->renderizaHtml('/Main/dashboard-html.php', ['titulo' => 'Dashboard - Poligás']);
         return new Response(200, [], $html);
     }
 }

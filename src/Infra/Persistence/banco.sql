@@ -29,10 +29,20 @@ ENGINE = InnoDB;
 -- Table poligasdb.`produtos_tipo`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `produtos_tipo` (
-  `id_ptoduto_tipo` INT NOT NULL AUTO_INCREMENT,
+  `id_produto` INT NOT NULL AUTO_INCREMENT,
   `nome_produto` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `marca_produto` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
-  PRIMARY KEY (`id_ptoduto_tipo`))
+  PRIMARY KEY (`id_produto`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table poligasdb.`tipo_pessoa`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tipo_pessoa` (
+  `id_tipo_pessoa` INT NOT NULL AUTO_INCREMENT,
+  `pessoa` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
+  PRIMARY KEY (`id_tipo_pessoa`))
 ENGINE = InnoDB;
 
 
@@ -41,6 +51,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `clientes` (
   `id_cliente` INT NOT NULL AUTO_INCREMENT,
+  `get_id_tipo_pessoa` INT NOT NULL,
   `nome_cliente` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `num_cliente` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `rua_cliente` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
@@ -48,7 +59,12 @@ CREATE TABLE IF NOT EXISTS `clientes` (
   `cidade_cliente` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `cep_cliente` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `numero_cliente` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
-  PRIMARY KEY (`id_cliente`))
+  PRIMARY KEY (`id_cliente`),
+  CONSTRAINT `clientes_ibfk_01`
+    FOREIGN KEY (`get_id_tipo_pessoa`)
+    REFERENCES `tipo_pessoa` (`id_tipo_pessoa`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -59,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `fornecedores` (
   `id_fornecedor` INT NOT NULL AUTO_INCREMENT,
   `cnpj_fornecedor` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `nome_fornecedor` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
-  `numero_fornecedor` VARCHAR(45) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
+  `numero_fornecedor` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `cidade_fornecedor` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   PRIMARY KEY (`id_fornecedor`))
 ENGINE = InnoDB;
@@ -69,19 +85,16 @@ ENGINE = InnoDB;
 -- Table poligasdb.`produtos_estoque`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `produtos_estoque` (
-  `id_ptoduto_tipo_estoque` INT NULL AUTO_INCREMENT,
-  `get_id_ptoduto_tipo_tipo` INT NOT NULL,
+  `id_produto_estoque` INT NOT NULL AUTO_INCREMENT,
+  `get_id_produto_tipo` INT NOT NULL,
   `get_id_fornecedor` INT NOT NULL,
+  `data_entrada_estoque` DATETIME NOT NULL,
   `qtd_produto_estoque` INT NOT NULL,
-  `valor_produto_compra` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
-  `valor_produto_venda` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
-  `lote` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
-  PRIMARY KEY (`id_ptoduto_tipo_estoque`),
-  INDEX `estoque_ibfk_01_idx` (`get_id_ptoduto_tipo_tipo` ASC) VISIBLE,
-  INDEX `estoque_ibfk_02_idx` (`get_id_fornecedor` ASC) VISIBLE,
+  `valor_produto_compra` DECIMAL NOT NULL,
+  PRIMARY KEY (`id_produto_estoque`),
   CONSTRAINT `estoque_ibfk_01`
-    FOREIGN KEY (`get_id_ptoduto_tipo_tipo`)
-    REFERENCES `produtos_tipo` (`id_ptoduto_tipo`)
+    FOREIGN KEY (`get_id_produto_tipo`)
+    REFERENCES `produtos_tipo` (`id_produto`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `estoque_ibfk_02`
@@ -93,29 +106,57 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table poligasdb.`tipo_pagamento`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tipo_pagamento` (
+  `id_tipo_pagamento` INT NOT NULL AUTO_INCREMENT,
+  `pagamento` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
+  PRIMARY KEY (`id_tipo_pagamento`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table poligasdb.`vendas`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `vendas` (
   `id_vendas` INT NOT NULL AUTO_INCREMENT,
   `get_id_cliente` INT NOT NULL,
   `get_id_estoque` INT NOT NULL,
-  `ordem_compra` INT NOT NULL,
+  `get_id_tipo_pagamento` INT NOT NULL,
+  `get_id_usuario_vendedor` INT NOT NULL,
+  `get_id_entregador` INT NULL,
+  `ordem_venda` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
+  `valor_produto_venda_und` DECIMAL NOT NULL,
   `data_venda` DATETIME NOT NULL,
-  `tipo_de_pagamento` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
+  `data_pagamento` DATETIME NOT NULL,
   PRIMARY KEY (`id_vendas`),
-  INDEX `compras_cliente_ibfk_01_idx` (`get_id_cliente` ASC) VISIBLE,
-  INDEX `vendas_ibfk_02_idx` (`get_id_estoque` ASC) VISIBLE,
   CONSTRAINT `vendas_ibfk_01`
     FOREIGN KEY (`get_id_cliente`)
-    REFERENCES .`clientes` (`id_cliente`)
+    REFERENCES `clientes` (`id_cliente`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `vendas_ibfk_02`
     FOREIGN KEY (`get_id_estoque`)
-    REFERENCES `produtos_estoque` (`id_ptoduto_tipo_estoque`)
+    REFERENCES `produtos_estoque` (`id_produto_estoque`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `vendas_ibfk_03`
+    FOREIGN KEY (`get_id_tipo_pagamento`)
+    REFERENCES `tipo_pagamento` (`id_tipo_pagamento`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `vendas_ibfk_04`
+    FOREIGN KEY (`get_id_usuario_vendedor`)
+    REFERENCES `usuarios` (`id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `vendas_ibfk_05`
+    FOREIGN KEY (`get_id_entregador`)
+    REFERENCES `usuarios` (`id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
 
 
 -- -----------------------------------------------------
@@ -123,11 +164,16 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `recupera_senha` (
   `id_recupera_senha` INT NOT NULL AUTO_INCREMENT,
+  `get_id_usuario` INT NOT NULL,
   `token` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
-  `email` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `data_pedido` DATETIME NOT NULL,
   `data_troca` DATETIME NULL,
-  PRIMARY KEY (`id_recupera_senha`))
+  PRIMARY KEY (`id_recupera_senha`),
+  CONSTRAINT `recupera_senha_ibfk_01`
+    FOREIGN KEY (`get_id_usuario`)
+    REFERENCES `usuarios` (`id_usuario`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 

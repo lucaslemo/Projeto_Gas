@@ -31,14 +31,14 @@
                       <label for="yourUsername" class="form-label">Nome de Usuário</label>
                       <div class="input-group has-validation">
                         <span class="input-group-text" id="inputGroupPrepend">@</span>
-                        <input type="text" name="username" class="form-control" id="yourUsername" required>
+                        <input type="text" name="login" class="form-control" id="yourUsername" required>
                         <div class="invalid-feedback">Digite o seu nome de Usuário!</div>
                       </div>
                     </div>
 
                     <div class="col-12">
                       <label for="yourPassword" class="form-label">Senha</label>
-                      <input type="password" name="password" class="form-control" id="yourPassword" required>
+                      <input type="password" name="senha" class="form-control" id="yourPassword" required>
                       <div class="invalid-feedback">Digite sua senha!</div>
                     </div>
 

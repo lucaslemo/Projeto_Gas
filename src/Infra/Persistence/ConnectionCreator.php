@@ -22,7 +22,6 @@ Class ConnectionCreator
             return $connection;
         } catch (\PDOException $e) {
             echo $e->getMessage() . '<br>';
-            echo $e;
         }
     }
 }

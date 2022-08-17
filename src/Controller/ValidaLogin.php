@@ -24,9 +24,6 @@ class ValidaLogin implements RequestHandlerInterface
     {
         $username = \strip_tags($request->getParsedBody()['login']);
         $senha = \strip_tags($request->getParsedBody()['senha']);
-        echo $username . "<br>";
-        echo $senha . "<br>";
-        exit();
         //password_hash('paulo', PASSWORD_ARGON2I);
         return new Response(200, ['Location' => '/dashboard'], "");
     }

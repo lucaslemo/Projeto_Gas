@@ -4,14 +4,16 @@ namespace Poligas\Aplicacao\Model\Class;
 
 class Usuario
 {
+    private int $id_usuario;
+    private int $key_tipo_usuario;
+    private int $tipo_usuario;
+    private string $nome_usuario;
+    private string $email_usuario;
+    private string $data_cadastro_usuario;
+    private string $senha_usuario;
+
     public function __construct(
-        private int $id_usuario,
-        private int $tipo_usuario,
-        private string $nome_usuario,
         private string $login_usuario,
-        private string $email_usuario,
-        private string $senha_usuario,
-        private string $data_cadastro_usuario
     ){}
 
     // Metodos
@@ -25,12 +27,16 @@ class Usuario
         return $this->id_usuario;
     }
 
-    public function get_tipo_usuario(): string{
-        return $this->tipo_usuario;
+    public function get_key_tipo_usuario(): string{
+        return $this->key_tipo_usuario;
     }
 
-    public function set_tipo_usuario(string $novoTipo): void{
-        $this->tipo_usuario = $novoTipo;
+    public function set_key_tipo_usuario(string $novoTipo): void{
+        $this->key_tipo_usuario = $novoTipo;
+    }
+
+    public function get_tipo_usuario(): string{
+        return $this->tipo_usuario;
     }
 
     public function get_nome(): string{

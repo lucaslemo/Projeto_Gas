@@ -2,13 +2,14 @@
 
 namespace Poligas\Aplicacao\Controller;
 
-use Poligas\Aplicacao\Entity\Usuario;
+use Poligas\Aplicacao\Model\Class\Usuario;
 use Poligas\Aplicacao\Helper\MessageTrait;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Nyholm\Psr7\Response;
 use Poligas\Aplicacao\Infra\Repository\PdoUserRepository;
+
 
 class ValidaLogin implements RequestHandlerInterface
 {
@@ -22,8 +23,11 @@ class ValidaLogin implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $username = \strip_tags($request->getParsedBody()['login']);
+        $login = \strip_tags($request->getParsedBody()['login']);
         $senha = \strip_tags($request->getParsedBody()['senha']);
+        $usuario = new Usuario($login, $senha);
+        $this->repositorioUsuarios->find_login($login);
+
         //password_hash('paulo', PASSWORD_ARGON2I);
         return new Response(200, ['Location' => '/dashboard'], "");
     }

@@ -2,6 +2,7 @@
 
 namespace Poligas\Aplicacao\Infra\Repository;
 
+use Exception;
 use Poligas\Aplicacao\Model\Repository\RepositoryInterface;
 use Poligas\Aplicacao\Model\Class\Usuario;
 
@@ -14,16 +15,18 @@ class PdoUserRepository implements RepositoryInterface
         $this->connection = $connection;
     }
 
-    public function inserir(Usuario $usuario): bool{
-        return false;
-    }
-    public function remover(Usuario $usuario): bool{
-        return false;
-    }
-    public function atualizar(Usuario $usuario): bool{
-        return false;
-    }
-    public function buscar(Usuario $usuario): bool{
-        return false;
+    public function find_login(string $login): object
+    {
+        $sql_code = "SELECT id_usuario, get_tipo_usuario, nome_usuario, login_usuario, email_usuario, senha_usuario, data_cadastro FROM usuarios WHERE login_usuario=?;";
+        $stmt = $this->connection->prepare($sql_code);
+        $stmt->bindValue(1, $login, \PDO::PARAM_STR);
+        $stmt->execute();
+        $loginData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        if (count($loginData) === 0){
+            throw new Exception('Não encontrado');
+        }
+        $usuario = new Usuario($loginData[0]['login_usuario']);
+        // Continua
+        return $usuario;
     }
 }

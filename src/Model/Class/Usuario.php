@@ -6,14 +6,15 @@ class Usuario
 {
     private int $id_usuario;
     private int $key_tipo_usuario;
-    private int $tipo_usuario;
+    private string $tipo_usuario;
     private string $nome_usuario;
+    private string $login_usuario;
     private string $email_usuario;
-    private string $data_cadastro_usuario;
     private string $senha_usuario;
+    private string $data_cadastro_usuario;
 
     public function __construct(
-        private string $login_usuario,
+        
     ){}
 
     // Metodos

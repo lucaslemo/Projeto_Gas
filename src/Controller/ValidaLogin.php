@@ -23,12 +23,19 @@ class ValidaLogin implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        // Dados do POST
         $login = \strip_tags($request->getParsedBody()['login']);
         $senha = \strip_tags($request->getParsedBody()['senha']);
-        $usuario = new Usuario($login, $senha);
-        $this->repositorioUsuarios->find_login($login);
 
+        // Busca no repositótio
+        $usuario = $this->repositorioUsuarios->find_one_by(['login_usuario' => $login]);
+
+        // Verifica se a senha esta correta e redireciona
+        if ($usuario === null || !$usuario->senhaEstaCorreta($senha)){
+            $this->mostraMensagem("Login ou Senha Inválidos!", "danger");
+            return new Response(200, ['Location' => '/login'], "");
+        }
+        return new Response(200, ['Location' => '/dashbord'], "");
         //password_hash('paulo', PASSWORD_ARGON2I);
-        return new Response(200, ['Location' => '/dashboard'], "");
     }
 }

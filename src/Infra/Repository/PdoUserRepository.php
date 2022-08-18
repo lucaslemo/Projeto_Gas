@@ -15,18 +15,48 @@ class PdoUserRepository implements RepositoryInterface
         $this->connection = $connection;
     }
 
-    public function find_login(string $login): object
+    public function find_one_by(array $values): Usuario|null
     {
-        $sql_code = "SELECT id_usuario, get_tipo_usuario, nome_usuario, login_usuario, email_usuario, senha_usuario, data_cadastro FROM usuarios WHERE login_usuario=?;";
-        $stmt = $this->connection->prepare($sql_code);
-        $stmt->bindValue(1, $login, \PDO::PARAM_STR);
-        $stmt->execute();
-        $loginData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        if (count($loginData) === 0){
-            throw new Exception('Não encontrado');
+        // Verifica se a funcao foi chamada com um array nao vazio
+        if (count($values) === 0){
+            return null;
         }
-        $usuario = new Usuario($loginData[0]['login_usuario']);
-        // Continua
+
+        // Monta a sql base para buscar um usuario
+        $sql_code = "SELECT 
+                id_usuario, 
+                get_tipo_usuario, 
+                nome_usuario, 
+                login_usuario, 
+                email_usuario, 
+                senha_usuario, 
+                data_cadastro 
+            FROM usuarios
+            WHERE ";
+        
+        // Monta os parametros em uma string
+        $parametros = '';
+        foreach ($values as $key => $value){
+            $parametros = $parametros . ":{$key}=? AND ";
+        }
+    
+        // Concatena a sql e prepara o statement
+        $sql_code = $sql_code . rtrim($parametros, ' AND ') . ';';
+        $stmt = $this->connection->prepare($sql_code);
+
+        foreach ($values as $key => $value){
+            $stmt->bindValue($key, $value, \PDO::PARAM_STR);
+        }
+        // Executa a query
+        $stmt->execute();
+
+        // Hidrata o resultado em uma instancia de Usuario
+        $usuario = $this->hydrateOneValue($stmt->fetch(\PDO::FETCH_ASSOC));
         return $usuario;
+    }
+
+    private function hydrateOneValue(array $datalist): Usuario{
+        var_dump($datalist);
+        exit();
     }
 }

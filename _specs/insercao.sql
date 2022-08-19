@@ -24,8 +24,6 @@ INSERT INTO `tipos_pagamento` (`nome_tipo_pagamento`) VALUES
 ('Cartão de Débito'),
 ('Cheque');
 
------------------------------------------------------------
-
 INSERT INTO `usuarios` (`get_tipo_usuario`, `nome_usuario`, `login_usuario`, `email_usuario`,`senha_usuario`, `data_cadastro`) VALUES (
     1, 
     'Paulo Kaynan', 
@@ -40,5 +38,3 @@ INSERT INTO `marcas` (`marca`) VALUES
 ('NACIONALGAS'),
 ('COPAGAS'),
 ('LIQUIGAS');
-
-

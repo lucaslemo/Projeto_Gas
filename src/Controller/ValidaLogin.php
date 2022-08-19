@@ -2,7 +2,6 @@
 
 namespace Poligas\Aplicacao\Controller;
 
-use Poligas\Aplicacao\Model\Class\Usuario;
 use Poligas\Aplicacao\Helper\MessageTrait;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,14 +27,19 @@ class ValidaLogin implements RequestHandlerInterface
         $senha = \strip_tags($request->getParsedBody()['senha']);
 
         // Busca no repositótio
-        $usuario = $this->repositorioUsuarios->find_one_by(['login_usuario' => $login]);
+        try {
+            $usuario = $this->repositorioUsuarios->find_one_by(['login_usuario' => $login]);
+        } catch (\PDOException $e) {
+            echo $e->getMessage();
+            exit();
+        }
 
         // Verifica se a senha esta correta e redireciona
         if ($usuario === null || !$usuario->senhaEstaCorreta($senha)){
             $this->mostraMensagem("Login ou Senha Inválidos!", "danger");
-            return new Response(200, ['Location' => '/login'], "");
+            return new Response(302, ['Location' => '/login'], "");
         }
-        return new Response(200, ['Location' => '/dashbord'], "");
+        return new Response(200, ['Location' => '/dashboard'], "");
         //password_hash('paulo', PASSWORD_ARGON2I);
     }
 }

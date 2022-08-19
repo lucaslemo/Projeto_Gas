@@ -7,14 +7,22 @@
           <div class="row justify-content-center">
             <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
 
+            <!-- Mensagem login -->
+              <?php if (isset($_SESSION['mensagem'])): ?>
+                <div class="alert alert-<?= $_SESSION['tipo-mensagem']; ?> alert-dismissible fade show" role="alert">
+                  <?= $_SESSION['mensagem']; ?>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              <?php 
+                unset($_SESSION['mensagem']);
+                unset($_SESSION['tipo-mensagem']);
+              ?>
+              <?php endif ?>
+
               <div class="d-flex justify-content-center py-4">
-              <a href="/login" class="logo d-flex align-items-center w-auto">
-                <img src="assets/img/logos/MARCA_DAGUA_2.png" alt="">
-              </a>
-                <!-- <a href="index.html" class="logo d-flex align-items-center w-auto">
-                  <img src="assets/img/logos/SIMBOLO.png" alt="">
-                  <span class="d-none d-lg-block">PoliGás</span>
-                </a> -->
+                <a href="/login" class="logo d-flex align-items-center w-auto">
+                  <img src="assets/img/logos/MARCA_DAGUA_2.png" alt="">
+                </a>
               </div>
 
               <div class="card mb-3">

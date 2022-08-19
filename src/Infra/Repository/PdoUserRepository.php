@@ -2,7 +2,6 @@
 
 namespace Poligas\Aplicacao\Infra\Repository;
 
-use Exception;
 use Poligas\Aplicacao\Model\Repository\RepositoryInterface;
 use Poligas\Aplicacao\Model\Class\Usuario;
 
@@ -24,39 +23,52 @@ class PdoUserRepository implements RepositoryInterface
 
         // Monta a sql base para buscar um usuario
         $sql_code = "SELECT 
-                id_usuario, 
-                get_tipo_usuario, 
-                nome_usuario, 
-                login_usuario, 
-                email_usuario, 
-                senha_usuario, 
-                data_cadastro 
+                usuarios.id_usuario,
+                tipos_usuario.nome_tipo_usuario,
+                usuarios.get_tipo_usuario,
+                usuarios.nome_usuario,
+                usuarios.login_usuario,
+                usuarios.email_usuario,
+                usuarios.senha_usuario,
+                usuarios.data_cadastro
             FROM usuarios
+            INNER JOIN tipos_usuario
+                on usuarios.get_tipo_usuario = tipos_usuario.id_tipo_usuario 
             WHERE ";
-        
-        // Monta os parametros em uma string
-        $parametros = '';
-        foreach ($values as $key => $value){
-            $parametros = $parametros . ":{$key}=? AND ";
-        }
-    
-        // Concatena a sql e prepara o statement
-        $sql_code = $sql_code . rtrim($parametros, ' AND ') . ';';
-        $stmt = $this->connection->prepare($sql_code);
 
+        // Monta os parametros em uma string
+        foreach ($values as $key => $value){
+            $sql_code = $sql_code . $key . " = " . ":{$key} AND ";
+        }
+        $sql_code = rtrim($sql_code, ' AND ') . ';';
+
+        // Bind values
+        $stmt = $this->connection->prepare($sql_code);
         foreach ($values as $key => $value){
             $stmt->bindValue($key, $value, \PDO::PARAM_STR);
         }
+
         // Executa a query
         $stmt->execute();
+        $datalist = $stmt->fetch(\PDO::FETCH_ASSOC);
 
+        // Verifica se o usuario foi encontrado
+        if ($datalist === false){
+            return null;
+        }
         // Hidrata o resultado em uma instancia de Usuario
-        $usuario = $this->hydrateOneValue($stmt->fetch(\PDO::FETCH_ASSOC));
+        $usuario = $this->hydrateOneValue($datalist);
         return $usuario;
     }
 
     private function hydrateOneValue(array $datalist): Usuario{
-        var_dump($datalist);
-        exit();
+        $usuario = new Usuario($datalist['login_usuario'], $datalist['senha_usuario']);
+        $usuario->set_id($datalist['id_usuario']);
+        $usuario->set_nome($datalist['nome_usuario']);
+        $usuario->set_tipo_usuario($datalist['nome_tipo_usuario']);
+        $usuario->set_key_tipo_usuario($datalist['get_tipo_usuario']);
+        $usuario->set_email($datalist['email_usuario']);
+        $usuario->set_data_cadastro($datalist['data_cadastro']);
+        return $usuario;
     }
 }

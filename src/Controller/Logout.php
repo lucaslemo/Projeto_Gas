@@ -11,6 +11,8 @@ class Logout implements RequestHandlerInterface
 {
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        session_unset();
+        session_destroy();
         return new Response(200, ['Location' => '/login'], "");
     }
 }

@@ -25,7 +25,7 @@ class PdoUserRepository implements RepositoryInterface
         $sql_code = "SELECT 
                 usuarios.id_usuario,
                 tipos_usuario.nome_tipo_usuario,
-                usuarios.get_tipo_usuario,
+                usuarios.get_id_tipo_usuario,
                 usuarios.nome_usuario,
                 usuarios.login_usuario,
                 usuarios.email_usuario,
@@ -33,7 +33,7 @@ class PdoUserRepository implements RepositoryInterface
                 usuarios.data_cadastro
             FROM usuarios
             INNER JOIN tipos_usuario
-                on usuarios.get_tipo_usuario = tipos_usuario.id_tipo_usuario 
+                on usuarios.get_id_tipo_usuario = tipos_usuario.id_tipo_usuario 
             WHERE ";
 
         // Monta os parametros em uma string
@@ -51,7 +51,7 @@ class PdoUserRepository implements RepositoryInterface
         // Executa a query
         $stmt->execute();
         $datalist = $stmt->fetch(\PDO::FETCH_ASSOC);
-
+  
         // Verifica se o usuario foi encontrado
         if ($datalist === false){
             return null;

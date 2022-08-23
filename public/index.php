@@ -3,6 +3,8 @@
 use Poligas\Aplicacao\Controller\Tela404;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
+use Poligas\Aplicacao\Util\ItsLogadoException;
+use Poligas\Aplicacao\Util\ItsNotLogadoException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -30,7 +32,7 @@ $creator = new ServerRequestCreator(
 $serverRequest = $creator->fromGlobals();
 
 // Verifica se a url exite no array de rotas
-if (!array_key_exists($caminho, $rotas)) {
+if (!array_key_exists($caminho, $rotas)){
     $classeControladora = Tela404::class;
 } else {
     // Inicia a sessao
@@ -45,7 +47,14 @@ if (!array_key_exists($caminho, $rotas)) {
 $controlador = $container->get($classeControladora);
 
 // Faz o processamento do request pelo controlador
-$resposta = $controlador->handle($serverRequest);
+try {
+    $resposta = $controlador->handle($serverRequest);
+} catch (ItsLogadoException | ItsNotLogadoException $exception) {
+    $classeControladora = $exception->getRedirect();
+    $controlador = $container->get($classeControladora);
+    $resposta = $controlador->handle($serverRequest);
+}
+
 
 // Recupera os cabecalhos da resposta
 foreach ($resposta->getHeaders() as $name => $values) {

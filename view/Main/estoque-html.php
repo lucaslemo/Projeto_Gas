@@ -8,7 +8,7 @@
       <h1>Estoque</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
           <li class="breadcrumb-item">Estoque</li>
           <li class="breadcrumb-item active">Dados</li>
         </ol>

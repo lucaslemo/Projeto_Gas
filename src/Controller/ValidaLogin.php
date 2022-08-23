@@ -7,7 +7,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Nyholm\Psr7\Response;
-use Poligas\Aplicacao\Helper\ItsLogado;
 use Poligas\Aplicacao\Helper\ItsLogadoTrait;
 use Poligas\Aplicacao\Infra\Repository\PdoUserRepository;
 

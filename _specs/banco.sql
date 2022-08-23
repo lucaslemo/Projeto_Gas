@@ -27,7 +27,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `usuarios` (
   `id_usuario` INT NOT NULL AUTO_INCREMENT,
-  `get_tipo_usuario` INT NOT NULL,
+  `get_id_tipo_usuario` INT NOT NULL,
   `nome_usuario` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `login_usuario` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `email_usuario` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `data_cadastro` DATETIME NOT NULL,
   PRIMARY KEY (`id_usuario`),
   CONSTRAINT `usuario_ibfk`
-    FOREIGN KEY (`get_tipo_usuario`)
+    FOREIGN KEY (`get_id_tipo_usuario`)
     REFERENCES `tipos_usuario` (`id_tipo_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `produtos_estoque` (
   `get_id_fornecedor` INT NOT NULL,
   `data_entrada_estoque` DATETIME NOT NULL,
   `qtd_produto_estoque` INT NOT NULL,
-  `valor_produto_compra` DECIMAL NOT NULL,
+  `valor_produto_compra` DECIMAL(15,2) NOT NULL,
   PRIMARY KEY (`id_produto_estoque`),
   CONSTRAINT `estoque_ibfk_01`
     FOREIGN KEY (`get_id_produto_tipo`)
@@ -173,9 +173,10 @@ CREATE TABLE IF NOT EXISTS `vendas` (
   `get_id_usuario_vendedor` INT NOT NULL,
   `get_id_entregador` INT NULL,
   `ordem_venda` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
-  `valor_produto_venda_und` DECIMAL NOT NULL,
+  `valor_produto_venda_und` DECIMAL(15,2) NOT NULL,
+  `qtd_produto_venda` INT NOT NULL,
   `data_venda` DATETIME NOT NULL,
-  `data_pagamento` DATETIME NOT NULL,
+  `data_pagamento` DATETIME NULL,
   PRIMARY KEY (`id_vendas`),
   CONSTRAINT `vendas_ibfk_01`
     FOREIGN KEY (`get_id_cliente`)

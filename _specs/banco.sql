@@ -12,6 +12,7 @@ SET time_zone = "+00:00";
 CREATE DATABASE IF NOT EXISTS poligasdb DEFAULT CHARACTER SET utf8mb4;
 USE poligasdb ;
 
+
 -- -----------------------------------------------------
 -- Table poligasdb.`tipos_usuario`
 -- -----------------------------------------------------
@@ -19,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `tipos_usuario` (
   `id_tipo_usuario` INT NOT NULL AUTO_INCREMENT,
   `nome_tipo_usuario` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   PRIMARY KEY (`id_tipo_usuario`))
-ENGINE = InnoDB;
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -29,9 +30,11 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `id_usuario` INT NOT NULL AUTO_INCREMENT,
   `get_id_tipo_usuario` INT NOT NULL,
   `nome_usuario` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
+  `sobrenome_usuario` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `login_usuario` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `email_usuario` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `senha_usuario` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
+  `status_usuario` TINYINT NOT NULL,
   `data_cadastro` DATETIME NOT NULL,
   PRIMARY KEY (`id_usuario`),
   CONSTRAINT `usuario_ibfk`
@@ -39,7 +42,29 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
     REFERENCES `tipos_usuario` (`id_tipo_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- -----------------------------------------------------
+-- Table poligasdb.`supervisores`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `supervisores` (
+  `id_supervisor` INT NOT NULL AUTO_INCREMENT,
+  `get_id_usuario_gerente` INT NOT NULL,
+  `get_id_usuario_entregador` INT NOT NULL,
+  PRIMARY KEY (`id_supervisor`),
+  CONSTRAINT `supervisores_ibfk_01`
+	FOREIGN KEY (`get_id_usuario_gerente`)
+    REFERENCES `usuarios` (`id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `supervisores_ibfk_02`
+	FOREIGN KEY (`get_id_usuario_entregador`)
+    REFERENCES `usuarios` (`id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+  )
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -49,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `tipos_produto` (
   `id_produto_tipo` INT NOT NULL AUTO_INCREMENT,
   `nome_tipo_produto` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   PRIMARY KEY (`id_produto_tipo`))
-ENGINE = InnoDB;
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -59,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `marcas` (
   `id_marcas` INT NOT NULL AUTO_INCREMENT,
   `marca` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   PRIMARY KEY (`id_marcas`))
-ENGINE = InnoDB;
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -80,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `produtos` (
     REFERENCES `marcas` (`id_marcas`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -90,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `tipos_pessoa` (
   `id_tipo_pessoa` INT NOT NULL AUTO_INCREMENT,
   `nome_tipo_pessoa` VARCHAR(255) CHARACTER SET 'utf8mb4' NOT NULL,
   PRIMARY KEY (`id_tipo_pessoa`))
-ENGINE = InnoDB;
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -112,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `clientes` (
     REFERENCES `tipos_pessoa` (`id_tipo_pessoa`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -125,7 +150,7 @@ CREATE TABLE IF NOT EXISTS `fornecedores` (
   `numero_fornecedor` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   `cidade_fornecedor` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   PRIMARY KEY (`id_fornecedor`))
-ENGINE = InnoDB;
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -149,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `produtos_estoque` (
     REFERENCES `fornecedores` (`id_fornecedor`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -159,7 +184,7 @@ CREATE TABLE IF NOT EXISTS `tipos_pagamento` (
   `id_tipo_pagamento` INT NOT NULL AUTO_INCREMENT,
   `nome_tipo_pagamento` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL,
   PRIMARY KEY (`id_tipo_pagamento`))
-ENGINE = InnoDB;
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -203,7 +228,7 @@ CREATE TABLE IF NOT EXISTS `vendas` (
     REFERENCES `usuarios` (`id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -221,7 +246,7 @@ CREATE TABLE IF NOT EXISTS `recupera_senha` (
     REFERENCES `usuarios` (`id_usuario`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-ENGINE = InnoDB;
+ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

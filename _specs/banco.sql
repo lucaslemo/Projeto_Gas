@@ -92,7 +92,7 @@ ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `produtos` (
   `id_produto` INT NOT NULL AUTO_INCREMENT,
-  `get_id_produto` INT NOT NULL,
+  `get_id_produto_tipo` INT NOT NULL,
   `get_id_marca` INT NOT NULL,
   PRIMARY KEY (`id_produto`),
   CONSTRAINT `produtos_ibfk_01`
@@ -158,7 +158,7 @@ ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `produtos_estoque` (
   `id_produto_estoque` INT NOT NULL AUTO_INCREMENT,
-  `get_id_produto_tipo` INT NOT NULL,
+  `get_id_produto` INT NOT NULL,
   `get_id_fornecedor` INT NOT NULL,
   `data_entrada_estoque` DATETIME NOT NULL,
   `qtd_produto_estoque` INT NOT NULL,

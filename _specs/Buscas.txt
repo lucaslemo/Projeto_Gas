@@ -1,7 +1,13 @@
 Vendas de hoje
-SELECT *
-FROM vendas
-WHERE vendas.data_venda = CURDATE()
+SELECT 
+V.ordem_venda AS ordem_de_venda,
+SUM(V.valor_produto_venda_und * V.qtd_produto_venda) AS valor,
+C.nome_cliente AS cliente,
+MAX(V.data_venda) AS data_da_venda
+FROM vendas AS V
+INNER JOIN clientes AS C
+	ON V.get_id_cliente = C.id_cliente
+GROUP BY V.ordem_venda
 
 Produtos em estoque
 SELECT *

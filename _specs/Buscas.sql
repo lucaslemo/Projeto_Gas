@@ -117,22 +117,12 @@ SELECT
 FROM vendas AS V
 INNER JOIN clientes AS C
 	ON V.get_id_cliente = C.id_cliente
-INNER JOIN tipos_pagamento AS TPG
-	ON V.get_id_tipo_pagamento = TPG.id_tipo_pagamento
 INNER JOIN usuarios AS UV
 	ON V.get_id_usuario_vendedor = UV.id_usuario
 LEFT JOIN usuarios AS UE
 	ON V.get_id_entregador = UE.id_usuario
-INNER JOIN produtos_estoque AS PE
-	ON V.get_id_produto_estoque = PE.id_produto_estoque
-INNER JOIN produtos AS P
-	ON PE.get_id_produto = P.id_produto
-INNER JOIN tipos_produto AS TP
-	ON P.get_id_tipo_produto = TP.id_tipo_produto
-INNER JOIN marcas AS M
-	ON P.get_id_marca = M.id_marca
 WHERE V.data_pagamento IS NULL
-GROUP BY V.id_vendas
+GROUP BY V.ordem_venda
 -- ------------------------------------------------------
 
 -- Produtos em estoque
@@ -153,7 +143,6 @@ INNER JOIN marcas AS M
 	ON P.get_id_marca = M.id_marca
 WHERE PE.qtd_produto_estoque > 0
 GROUP BY PE.get_id_produto
-
 -- ------------------------------------------------------
 
 -- Lista Usuarios Entregadores (Gerente X)
@@ -169,13 +158,94 @@ INNER JOIN supervisores AS S
 INNER JOIN usuarios AS U2
 	ON S.get_id_usuario_gerente = U2.id_usuario
 WHERE S.get_id_usuario_gerente = 1
-
 -- ------------------------------------------------------
 
 -- Balanço
 SELECT
-    SUM(V.valor_produto_venda_und * V.qtd_produto_venda) AS vendido,
-    SUM(PE.valor_produto_compra_und * PE.qtd_produto_estoque) AS comprado,
-    SUM(V.valor_produto_venda_und * V.qtd_produto_venda) - SUM(PE.valor_produto_compra_und * PE.qtd_produto_estoque) AS valor_total
-FROM vendas as V
+	SUM(PE.qtd_produto_estoque * PE.valor_produto_compra_und) + SUM(V.qtd_produto_venda * PE.valor_produto_compra_und) AS valor_compra,
+	SUM(V.qtd_produto_venda * V.valor_produto_venda_und) AS valor_venda,
+	SUM(PE.qtd_produto_estoque * PE.valor_produto_compra_und) AS valor_em_estoque,
+	SUM(V.qtd_produto_venda * V.valor_produto_venda_und) - (SUM(PE.qtd_produto_estoque * PE.valor_produto_compra_und) + SUM(V.qtd_produto_venda * PE.valor_produto_compra_und)) AS balanco
+FROM vendas AS V
+RIGHT JOIN produtos_estoque AS PE
+	ON V.get_id_produto_estoque = PE.id_produto_estoque
+-- ------------------------------------------------------
+
+-- Vendas por tipo de pessoa
+SELECT
+	COUNT(DISTINCT V.ordem_venda) AS vendas,
+	(
+        SELECT 
+     		COUNT(DISTINCT V.ordem_venda) AS vendas_pf
+        FROM vendas AS V
+        INNER JOIN clientes AS C 
+			ON V.get_id_cliente = C.id_cliente
+        WHERE C.get_id_tipo_pessoa = 1
+    ) AS vendas_pf,
+	(
+        SELECT 
+     		COUNT(DISTINCT V.ordem_venda) AS vendas_pf
+        FROM vendas AS V
+        INNER JOIN clientes AS C 
+			ON V.get_id_cliente = C.id_cliente
+        WHERE C.get_id_tipo_pessoa = 2
+    ) AS vendas_pj
+FROM vendas AS V
+
+-- Com porcentagem
+SELECT
+	COUNT(DISTINCT V.ordem_venda) AS vendas,
+	(
+        SELECT 
+     		COUNT(DISTINCT V.ordem_venda) AS vendas_pf
+        FROM vendas AS V
+        INNER JOIN clientes AS C 
+			ON V.get_id_cliente = C.id_cliente
+        WHERE C.get_id_tipo_pessoa = 1
+    )/COUNT(DISTINCT V.ordem_venda) * 100 AS vendas_pf,
+	(
+        SELECT 
+     		COUNT(DISTINCT V.ordem_venda) AS vendas_pf
+        FROM vendas AS V
+        INNER JOIN clientes AS C 
+			ON V.get_id_cliente = C.id_cliente
+        WHERE C.get_id_tipo_pessoa = 2
+    )/COUNT(DISTINCT V.ordem_venda) * 100 AS vendas_pj
+FROM vendas AS V
+-- ------------------------------------------------------
+
+-- Vendas por tipo de pagamento
+SELECT
+	T.nome_tp AS tipo_pagamento,
+	COUNT(T.id_tp) AS qtd
+FROM (SELECT
+      	V.get_id_tipo_pagamento AS id_tp,
+      	TP.nome_tipo_pagamento AS nome_tp
+      FROM vendas AS V
+      INNER JOIN tipos_pagamento As TP
+      	ON V.get_id_tipo_pagamento = TP.id_tipo_pagamento
+      GROUP BY V.ordem_venda) AS T
+GROUP BY T.nome_tp
+-- ------------------------------------------------------
+
+-- Vendas com/sem entregas
+SELECT
+	(SELECT COUNT(DISTINCT V.ordem_venda) FROM vendas AS V WHERE V.get_id_entregador IS NOT NULL) AS vendas_com,
+	(SELECT COUNT(DISTINCT V.ordem_venda) FROM vendas AS V WHERE V.get_id_entregador IS NULL) AS vendas_sem
+FROM vendas
+LIMIT 1
+-- ------------------------------------------------------
+
+-- Produtos mais vendidos
+SELECT
+	TP.nome_tipo_produto AS produto,
+	COUNT(V.id_vendas) AS por_venda
+FROM vendas AS V
 INNER JOIN produtos_estoque AS PE
+	ON V.get_id_produto_estoque = PE.id_produto_estoque
+INNER JOIN produtos AS P
+	ON PE.get_id_produto = P.id_produto
+INNER JOIN tipos_produto AS TP
+	ON P.get_id_tipo_produto = TP.id_tipo_produto
+GROUP BY TP.id_tipo_produto
+-- ------------------------------------------------------

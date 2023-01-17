@@ -1,0 +1,5 @@
+*code-workspace
+vendor/
+.idea
+.lock
+!public/assets/vendor/

@@ -1,67 +1,55 @@
 <?php
 
-use Poligas\Aplicacao\Controller\Tela404;
-use Nyholm\Psr7\Factory\Psr17Factory;
-use Nyholm\Psr7Server\ServerRequestCreator;
-use Poligas\Aplicacao\Util\ItsLogadoException;
-use Poligas\Aplicacao\Util\ItsNotLogadoException;
-use Psr\Container\ContainerInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Http\Request;
 
-require __DIR__ . '/../vendor/autoload.php';
+define('LARAVEL_START', microtime(true));
 
-// Recebe a url do request
-$url = parse_url($_SERVER['REQUEST_URI']);
-$caminho = $url['path'];
+/*
+|--------------------------------------------------------------------------
+| Check If The Application Is Under Maintenance
+|--------------------------------------------------------------------------
+|
+| If the application is in maintenance / demo mode via the "down" command
+| we will load this file so that any pre-rendered content can be shown
+| instead of starting the framework, which could cause an exception.
+|
+*/
 
-// Recebe as rotas da aplicacao
-$rotas = require __DIR__ . '/../config/Routes/routes.php';
-
-// Inicializa o container para instanciar as classes de controle
-/** @var ContainerInterface $container */
-$container = require __DIR__ . '/../config/dependencies.php';
-
-// Implementacao do psr7 pela ferramenta nyholm/psr7-server https://github.com/Nyholm/psr7-server
-$psr17Factory = new Psr17Factory();
-$creator = new ServerRequestCreator(
-    $psr17Factory, // ServerRequestFactory
-    $psr17Factory, // UriFactory
-    $psr17Factory, // UploadedFileFactory
-    $psr17Factory  // StreamFactory
-);
-$serverRequest = $creator->fromGlobals();
-
-// Verifica se a url exite no array de rotas
-if (!array_key_exists($caminho, $rotas)){
-    $classeControladora = Tela404::class;
-} else {
-    // Inicia a sessao
-    if (!isset($_SESSION)){
-        session_start();
-    }
-    $classeControladora = $rotas[$caminho];
+if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
+    require $maintenance;
 }
 
-// Instancia classe de controle
-/** @var RequestHandlerInterface $controlador */
-$controlador = $container->get($classeControladora);
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------------------------------------------------------
+|
+| Composer provides a convenient, automatically generated class loader for
+| this application. We just need to utilize it! We'll simply require it
+| into the script here so we don't need to manually load our classes.
+|
+*/
 
-// Faz o processamento do request pelo controlador
-try {
-    $resposta = $controlador->handle($serverRequest);
-} catch (ItsLogadoException | ItsNotLogadoException $exception) {
-    $classeControladora = $exception->getRedirect();
-    $controlador = $container->get($classeControladora);
-    $resposta = $controlador->handle($serverRequest);
-}
+require __DIR__.'/../vendor/autoload.php';
 
+/*
+|--------------------------------------------------------------------------
+| Run The Application
+|--------------------------------------------------------------------------
+|
+| Once we have the application, we can handle the incoming request using
+| the application's HTTP kernel. Then, we will send the response back
+| to this client's browser, allowing them to enjoy our application.
+|
+*/
 
-// Recupera os cabecalhos da resposta
-foreach ($resposta->getHeaders() as $name => $values) {
-    foreach ($values as $value) {
-        header(sprintf('%s: %s', $name, $value), false);
-    }
-}
+$app = require_once __DIR__.'/../bootstrap/app.php';
 
-// Mostra o html gerado pela classe de controle
-echo $resposta->getBody();
+$kernel = $app->make(Kernel::class);
+
+$response = $kernel->handle(
+    $request = Request::capture()
+)->send();
+
+$kernel->terminate($request, $response);

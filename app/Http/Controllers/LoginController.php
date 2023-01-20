@@ -15,24 +15,25 @@ class LoginController extends Controller
             ->with('mensagem', $mensagem));
     }
 
-    public function validaLogin(Request $request)
+    public function store(Request $request)
     {
         $login = $request->input('login');
         $senha = $request->input('senha');
         $usuario = DB::table('usuarios')->where('login_usuario', $login)->first();
 
         if(is_null($usuario) || !password_verify($senha, $usuario->senha_usuario)){
-            $request->session()->flash('mensagem.login', 'Usuário ou senha Incorretos');
-            return redirect('/login');
+            return to_route('login.index')
+                ->with('mensagem.login', 'Usuário ou senha Incorretos');
         }
 
+        // $request->session()->
         $nomeUsuario = ucfirst($usuario->nome_usuario);
-        $request->session()->flash('mensagem.dashboard', "Bem Vindo! <strong>{$nomeUsuario}.</strong>");
-        return redirect('/dashboard');
+        return to_route('dashboard.index')
+            ->with('mensagem.dashboard', "Bem Vindo! <strong>{$nomeUsuario}.</strong>");
     }
 
-    public function logout()
+    public function destroy()
     {
-        return redirect('/login');
+        return to_route('login.index');
     }
 }

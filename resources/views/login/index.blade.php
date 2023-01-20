@@ -8,10 +8,11 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
 
-                            <div class="row w-100 h-100 mb-1 position-absolut">
-                                <div class="col-12 background-login"
-                                style="background-image: url({{ Vite::asset('resources/assets/img/logos/MARCA_DAGUA_2.png') }});
-                                height: 130px;"></div>
+                            <div class="d-flex justify-content-center py-4">
+                                <div class="d-flex align-items-center w-auto">
+                                    <img src="{{ Vite::asset('resources/assets/img/logos/MARCA_DAGUA_2.png') }}" alt="Logo Poligas"
+                                    style="max-height: 80px;">
+                                </div>
                             </div>
 
                             <div class="row">
@@ -24,7 +25,7 @@
                                                 <h5 class="card-title text-center pb-0 fs-4">Login</h5>
                                             </div>
 
-                                            <form action="/login/validar" class="row g-3 needs-validation" method="POST"
+                                            <form action="{{ route('login.store') }}" class="row g-3 needs-validation" method="POST"
                                             accept-charset="utf-8" autocomplete="on" enctype="multipart/form-data">
 
                                                 {{-- Mensagem login --}}
@@ -61,7 +62,7 @@
                                                     <button class="btn btn-primary w-100" type="submit">Entrar</button>
                                                 </div>
                                                 <div class="col-12">
-                                                    <p class="small mb-0">Esqueceu sua senha? <a href="pages-register.html">Redefinir Senha</a></p>
+                                                    <p class="small mb-0">Esqueceu sua senha? <a href="#">Redefinir Senha</a></p>
                                                 </div>
                                             </form>
                                         </div>

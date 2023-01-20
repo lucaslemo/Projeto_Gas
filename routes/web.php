@@ -21,11 +21,18 @@ Route::get('/laravel', function () {
     return view('welcome');
 });
 
-Route::get('/', [LoginController::class, 'index']);
-Route::get('/login', [LoginController::class, 'index']);
-Route::post('/login/validar', [LoginController::class, 'validaLogin']);
-Route::get('/logout', [LoginController::class, 'logout']);
+Route::get('/', function () {
+    return to_route('login.index');
+});
 
-Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::resource('/login', LoginController::class)
+    ->only(['index', 'store', 'destroy']);
 
-Route::get('/estoque', [EstoqueController::class, 'index']);
+Route::resource('/dashboard', DashboardController::class)
+    ->only(['index']);
+
+Route::resource('/estoque', EstoqueController::class)
+    ->only(['index']);
+
+Route::resource('/usuario', UsuariosController::class)
+    ->only(['show']);

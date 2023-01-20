@@ -1,3 +1,4 @@
-import './bootstrap';
-import '../assets/vendor/bootstrap/js/bootstrap.bundle.min.js';
-import '../assets/vendor/simple-datatables/simple-datatables';
+import.meta.glob([
+    '../assets/img/logos/**',
+    '../assets/img/perfis/**',
+  ]);

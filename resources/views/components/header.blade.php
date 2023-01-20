@@ -2,9 +2,10 @@
 <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-        <a href="/" class="logo d-flex align-items-center">
-            <img src="{{ Vite::asset('resources/assets/img/logos/MARCA_DAGUA_2.png') }}">
-        </a>
+        <div class="d-flex align-items-center">
+            <img src="{{ Vite::asset('resources/assets/img/logos/MARCA_DAGUA_2.png') }}"
+            style="max-height: 40px;">
+        </div>
         <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
     
@@ -41,7 +42,7 @@
             </li>
     
             <li>
-                <a class="dropdown-item d-flex align-items-center" href="/perfil-usuario">
+                <a class="dropdown-item d-flex align-items-center" href="{{ route('usuario.show', 1) }}">
                 <i class="bi bi-person"></i>
                 <span>Meu Perfil</span>
                 </a>
@@ -51,10 +52,19 @@
             </li>
     
             <li>
-                <a class="dropdown-item d-flex align-items-center" href="/logout">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Sair</span>
-                </a>
+                <div class="dropdown-item d-flex align-items-center justify-content-center">
+                    <form action="{{ route('login.destroy', 1) }}"  class="row g-3 needs-validation" method="POST"
+                        accept-charset="utf-8" autocomplete="on" enctype="multipart/form-data">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm btn-outline-danger">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-box-arrow-right"></i>
+                                Sair
+                            </div>
+                        </button>
+                    </form>
+                </div>
             </li>
     
             </ul><!-- End Profile Dropdown Items -->

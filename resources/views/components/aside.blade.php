@@ -13,7 +13,7 @@
         </a>
         <ul id="tables-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
           <li>
-            <a href="/estoque">
+            <a href="{{ route('estoque.index') }}">
               <i class="bi bi-circle"></i><span>Dados</span>
             </a>
           </li>

@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UsuariosController;
+use App\Http\Middleware\Autenticador;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,16 +24,18 @@ Route::get('/laravel', function () {
 
 Route::get('/', function () {
     return to_route('login.index');
-});
+})->name('login');
 
 Route::resource('/login', LoginController::class)
     ->only(['index', 'store', 'destroy']);
 
-Route::resource('/dashboard', DashboardController::class)
-    ->only(['index']);
+Route::middleware([Autenticador::class])->group(function () {
+    Route::resource('/dashboard', DashboardController::class)
+        ->only(['index']);
 
-Route::resource('/estoque', EstoqueController::class)
-    ->only(['index']);
+    Route::resource('/estoque', EstoqueController::class)
+        ->only(['index']);
 
-Route::resource('/usuario', UsuariosController::class)
-    ->only(['show']);
+    Route::resource('/usuario', UsuariosController::class)
+        ->only(['show']);
+});

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -19,21 +19,21 @@ class LoginController extends Controller
     {
         $login = $request->input('login');
         $senha = $request->input('senha');
-        $usuario = DB::table('usuarios')->where('login_usuario', $login)->first();
+        $remember = !is_null($request->input('remember')) ? true : false;
 
-        if(is_null($usuario) || !password_verify($senha, $usuario->senha_usuario)){
+        if(! Auth::attempt(['login_usuario' => $login, 'password' => $senha, 'status_usuario' => 1], $remember)){
             return to_route('login.index')
                 ->with('mensagem.login', 'Usuário ou senha Incorretos');
         }
 
-        // $request->session()->
-        $nomeUsuario = ucfirst($usuario->nome_usuario);
+        $nomeUsuario = ucfirst('Lucas');
         return to_route('dashboard.index')
             ->with('mensagem.dashboard', "Bem Vindo! <strong>{$nomeUsuario}.</strong>");
     }
 
     public function destroy()
     {
+        Auth::logout();
         return to_route('login.index');
     }
 }

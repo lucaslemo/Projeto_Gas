@@ -19,7 +19,7 @@ class LoginController extends Controller
     {
         $login = $request->input('login');
         $senha = $request->input('senha');
-        $remember = !is_null($request->input('remember')) ? true : false;
+        $remember = $request->has('remember') ? true : false;
 
         if(! Auth::attempt(['login_usuario' => $login, 'password' => $senha, 'status_usuario' => 1], $remember)){
             return to_route('login.index')

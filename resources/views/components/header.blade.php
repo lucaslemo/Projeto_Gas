@@ -28,7 +28,11 @@
         <li class="nav-item dropdown pe-3">
     
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                <img src="{{ Vite::asset('resources/assets/img/perfis/user.png') }}">
+                @if(!is_null(Auth::user()->img_path))
+                <img class="border rounded-circle" src="{{ asset('storage/' . Auth::user()->img_path) }}">
+                @else
+                <img class="border rounded-circle" src="{{ Vite::asset('resources/assets/img/perfis/user.png') }}">
+                @endif 
                 <span class="d-none d-md-block dropdown-toggle ps-2"><?= $nomeAbreviado; ?></span>
             </a><!-- End Profile Iamge Icon -->
     
@@ -42,7 +46,7 @@
             </li>
     
             <li>
-                <a class="dropdown-item d-flex align-items-center" href="{{ route('usuario.show', 1) }}">
+                <a class="dropdown-item d-flex align-items-center" href="{{ route('usuario.show', Auth::id()) }}">
                 <i class="bi bi-person"></i>
                 <span>Meu Perfil</span>
                 </a>

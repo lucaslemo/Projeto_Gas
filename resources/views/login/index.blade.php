@@ -77,4 +77,5 @@
 
         </div>
     </main>
+    <x-scripts></x-scripts>
 </x-layout>

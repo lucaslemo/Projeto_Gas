@@ -56,6 +56,18 @@ export default defineConfig({
                     dest: 'assets'
                 },
                 {
+                    src: 'node_modules/cropperjs/dist/cropper.common.js',
+                    dest: 'assets'
+                },
+                {
+                    src: 'node_modules/cropperjs/dist/cropper.esm.js',
+                    dest: 'assets'
+                },
+                {
+                    src: 'node_modules/cropperjs/dist/cropper.min.js',
+                    dest: 'assets'
+                },
+                {
                     src: 'resources/assets/js/main.js',
                     dest: 'assets'
                 }

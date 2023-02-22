@@ -58,9 +58,16 @@
                           <i class="bi bi-cart"></i>
                         </div>
                         <div class="ps-3">
-                          <h6>145</h6>
-                          <span class="text-success small pt-1 fw-bold">+12%</span>
-    
+
+                          <h6>{{ $qtdVendas['qtdHoje'] }}</h6>
+                          @if($qtdVendas['taxaCrecimento'] > 0)
+                          <span class="text-success small pt-1 fw-bold">+{{ $qtdVendas['taxaCrecimento'] }}%</span>
+                          @elseif($qtdVendas['taxaCrecimento'] < 0)
+                          <span class="text-danger small pt-1 fw-bold">{{ $qtdVendas['taxaCrecimento'] }}%</span>
+                          @else
+                          <span class="text-secondary small pt-1 fw-bold">{{ $qtdVendas['taxaCrecimento'] }}%</span>
+                          @endif
+
                         </div>
                       </div>
                     </div>
@@ -203,7 +210,15 @@
                             },
                             xaxis: {
                               type: 'datetime',
-                              categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+                              categories: [
+                                "2018-09-19T08:00:00.000Z",
+                                "2018-09-19T10:00:00.000Z",
+                                "2018-09-19T12:00:00.000Z",
+                                "2018-09-19T14:00:00.000Z",
+                                "2018-09-19T16:00:00.000Z",
+                                "2018-09-19T18:00:00.000Z",
+                                "2018-09-19T20:00:00.000Z"
+                              ]
                             },
                             tooltip: {
                               x: {
@@ -514,4 +529,5 @@
     </main><!-- End #main -->
 
   <x-footer></x-footer>
+  <x-scripts></x-scripts>
 </x-layout>

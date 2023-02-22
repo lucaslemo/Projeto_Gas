@@ -37,5 +37,5 @@ Route::middleware([Autenticador::class])->group(function () {
         ->only(['index']);
 
     Route::resource('/usuario', UsuariosController::class)
-        ->only(['show']);
+        ->only(['show', 'update']);
 });

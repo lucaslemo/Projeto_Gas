@@ -37,6 +37,7 @@ class MainRepository implements MainRepositoryInterface
                 'V.data_venda AS data_da_venda',
                 'V.data_pagamento AS data_do_pagamento'
             )
+            ->where('V.data_venda', '>', DB::raw('CURRENT_DATE()'))
             ->groupBy('V.id_vendas');
 
         $tabelaVendas = DB::query()->fromSub($subVendas, 'NV')
@@ -55,5 +56,30 @@ class MainRepository implements MainRepositoryInterface
             ->groupBy('NV.ordem_de_venda')->get();
 
         return $tabelaVendas;
+    }
+
+    public function quantidadeVendas(): array
+    {
+        $qtdHoje = DB::table('vendas AS V')
+            ->select(DB::raw('COUNT(DISTINCT V.ordem_venda) AS vendas'))
+            ->where('V.data_venda', '>', DB::raw('CURRENT_DATE()'))
+            ->first();
+        
+        $qtdOntem = DB::table('vendas AS V')
+            ->select(DB::raw('COUNT(DISTINCT V.ordem_venda) AS vendas'))
+            ->where('V.data_venda', '>', DB::raw('SUBDATE(CURRENT_DATE(), 1)'))
+            ->where('V.data_venda', '<', DB::raw('CURRENT_DATE()'))
+            ->first();
+        
+        $taxaCrecimento = 0;
+        if ($qtdOntem->vendas > 0){
+            $taxaCrecimento = (($qtdHoje->vendas - $qtdOntem->vendas) / $qtdOntem->vendas) * 100;
+        }
+        
+        return [
+            'qtdHoje' => $qtdHoje->vendas,
+            'qtdOntem' => $qtdOntem->vendas,
+            'taxaCrecimento' => $taxaCrecimento
+        ];
     }
 }

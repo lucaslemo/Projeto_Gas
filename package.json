@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "bootstrap": "^5.2.3",
+        "cropperjs": "^1.5.13",
         "vite-plugin-static-copy": "^0.13.0"
     }
 }

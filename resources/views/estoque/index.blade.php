@@ -77,4 +77,5 @@
 
         </main><!-- End #main -->
     <x-footer></x-footer>
+    <x-scripts></x-scripts>
   </x-layout>
